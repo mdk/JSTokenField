@@ -36,12 +36,29 @@
 @synthesize highlightedBg = _highlightedBg;
 @synthesize representedObject = _representedObject;
 
+@synthesize topShadeColor = _topShadeColor;
+@synthesize lowShadeColor = _lowShadeColor;
+@synthesize topStrokeColor = _topStrokeColor;
+@synthesize lowStrokeColor = _lowStrokeColor;
+@synthesize topHighlightShadeColor = _topHighlightShadeColor;
+@synthesize lowHighlightShadeColor = _lowHighlightShadeColor;
+@synthesize topHighlightStrokeColor = _topHighlightStrokeColor;
+@synthesize lowHighlightStrokeColor = _lowHighlightStrokeColor;
+
 + (JSTokenButton *)tokenWithString:(NSString *)string representedObject:(id)obj
 {
 	JSTokenButton *button = (JSTokenButton *)[self buttonWithType:UIButtonTypeCustom];
-	[button setNormalBg:[[UIImage imageNamed:@"tokenNormal.png"] stretchableImageWithLeftCapWidth:14 topCapHeight:0]];
-	[button setHighlightedBg:[[UIImage imageNamed:@"tokenHighlighted.png"] stretchableImageWithLeftCapWidth:14 topCapHeight:0]];
-	[button setAdjustsImageWhenHighlighted:NO];
+    [button setTopShadeColor:[UIColor colorWithRed:0.792 green:0.933 blue:1.0 alpha:1.0]];
+    [button setLowShadeColor:[UIColor colorWithRed:0.600 green:0.874 blue:1.0 alpha:1.0]];
+    [button setTopStrokeColor:[UIColor colorWithRed:0.20 green:0.55 blue:0.65 alpha:0.25]];
+    [button setLowStrokeColor:[UIColor colorWithRed:0.3 green:0.65 blue:0.75 alpha:0.25]];
+
+    [button setTopHighlightShadeColor:[UIColor colorWithRed:0.505 green:0.823 blue:1.952 alpha:1.0]];
+    [button setLowHighlightShadeColor:[UIColor colorWithRed:0.282 green:0.606 blue:0.737 alpha:1.0]];
+    [button setTopHighlightStrokeColor:[UIColor colorWithRed:0.313 green:0.647 blue:0.792 alpha:1]];
+    [button setLowHighlightStrokeColor:[UIColor colorWithRed:0.298 green:0.619 blue:0.749 alpha:1]];
+    
+    [button setAdjustsImageWhenHighlighted:NO];
 	[button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 	[[button titleLabel] setFont:[UIFont fontWithName:@"Helvetica Neue" size:15]];
 	[[button titleLabel] setLineBreakMode:UILineBreakModeTailTruncation];
@@ -64,14 +81,14 @@
 	
 	if (_toggled)
 	{
-		[self setBackgroundImage:self.highlightedBg forState:UIControlStateNormal];
 		[self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
 	}
 	else
 	{
-		[self setBackgroundImage:self.normalBg forState:UIControlStateNormal];
 		[self setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 	}
+    
+    [self setNeedsDisplay];
 }
 
 - (void)sizeToFitWithMargin:(CGSize)margin
@@ -83,13 +100,92 @@
 	[self setFrame:frame];
 }
 
+- (void)addRoundedRect:(CGRect)rect withRadius:(CGFloat)radius inContext:(CGContextRef)context
+{
+
+    
+    // Make sure corner radius isn't larger than half the shorter side
+    if (radius > rect.size.width / 2.0)
+        radius = rect.size.width / 2.0;
+    if (radius > rect.size.height / 2.0)
+        radius = rect.size.height / 2.0;    
+    
+    CGFloat minx = CGRectGetMinX(rect);
+    CGFloat midx = CGRectGetMidX(rect);
+    CGFloat maxx = CGRectGetMaxX(rect);
+    CGFloat miny = CGRectGetMinY(rect);
+    CGFloat midy = CGRectGetMidY(rect);
+    CGFloat maxy = CGRectGetMaxY(rect);
+    CGContextMoveToPoint(context, minx, midy);
+    CGContextAddArcToPoint(context, minx, miny, midx, miny, radius);
+    CGContextAddArcToPoint(context, maxx, miny, maxx, midy, radius);
+    CGContextAddArcToPoint(context, maxx, maxy, midx, maxy, radius);
+    CGContextAddArcToPoint(context, minx, maxy, minx, midy, radius);
+    CGContextClosePath(context);
+    
+}
+
+- (CGGradientRef)createGradientForColor:(UIColor*)color1 andColor:(UIColor*)color2
+{
+    CGColorRef c1 = [color1 CGColor];
+    CGColorRef c2 = [color2 CGColor];
+    
+    // Create the gradient
+    const float *components1 = CGColorGetComponents(c1);
+    const float *components2 = CGColorGetComponents(c2);
+    
+    CGFloat gradientLocations[2] = { 0.0, 1.0 };
+    CGFloat gradientComponents[8] = { components1[0], components1[1], components1[2], components1[3],
+        components2[0], components2[1], components2[2], components2[3] };    
+    
+    static CGColorSpaceRef space = nil;
+    if (! space)
+        space = CGColorSpaceCreateDeviceRGB();
+    
+    return CGGradientCreateWithColorComponents(space, gradientComponents, gradientLocations, 2);
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGGradientRef strokeGradient;
+    if (_toggled)
+        strokeGradient = [self createGradientForColor:_topHighlightStrokeColor andColor:_lowHighlightStrokeColor];
+    else 
+        strokeGradient = [self createGradientForColor:_topStrokeColor andColor:_lowStrokeColor];
+    
+    [self addRoundedRect:[self bounds] withRadius:[self bounds].size.height / 2 inContext:context];
+    CGContextSaveGState(context);
+    CGContextClip(context);
+    CGContextDrawLinearGradient(context, strokeGradient, CGPointMake(0, 0), CGPointMake(0, [self bounds].size.height), 0);
+    CFRelease(strokeGradient);
+    CGContextRestoreGState(context);
+
+    CGGradientRef shadeGradient;
+    if (_toggled)
+        shadeGradient = [self createGradientForColor:_topHighlightShadeColor andColor:_lowHighlightShadeColor];
+    else 
+        shadeGradient = [self createGradientForColor:_topShadeColor andColor:_lowShadeColor];
+
+    [self addRoundedRect:CGRectInset([self bounds], 1, 1) withRadius:[self bounds].size.height / 2 inContext:context];
+    CGContextSaveGState(context);
+    CGContextClip(context);
+    CGContextDrawLinearGradient(context, shadeGradient, CGPointMake(0, 1), CGPointMake(0, [self bounds].size.height - 1), 0);
+    CFRelease(shadeGradient);
+    CGContextRestoreGState(context);    
+}
+
 - (void)dealloc
 {
 	self.representedObject = nil;
 	self.highlightedBg = nil;
 	self.normalBg = nil;
+    self.topHighlightShadeColor = nil;
+    self.lowHighlightShadeColor = nil;
+    self.topShadeColor = nil;
+    self.lowShadeColor = nil;
     [super dealloc];
 }
-
 
 @end

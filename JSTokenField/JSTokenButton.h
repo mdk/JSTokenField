@@ -34,7 +34,17 @@
 	
 	UIImage *_normalBg;
 	UIImage *_highlightedBg;
-	
+    
+    UIColor *_topShadeColor;
+    UIColor *_lowShadeColor;
+    UIColor *_topStrokeColor;
+    UIColor *_lowStrokeColor;
+
+    UIColor *_topHighlightShadeColor;
+    UIColor *_lowHighlightShadeColor;
+    UIColor *_topHighlightStrokeColor;
+    UIColor *_lowHighlightStrokeColor;
+    
 	id _representedObject;
 	
 }
@@ -43,6 +53,16 @@
 
 @property (nonatomic, retain) UIImage *normalBg;
 @property (nonatomic, retain) UIImage *highlightedBg;
+
+@property (nonatomic, retain) UIColor *topShadeColor;
+@property (nonatomic, retain) UIColor *lowShadeColor;
+@property (nonatomic, retain) UIColor *topStrokeColor;
+@property (nonatomic, retain) UIColor *lowStrokeColor;
+
+@property (nonatomic, retain) UIColor *topHighlightShadeColor;
+@property (nonatomic, retain) UIColor *lowHighlightShadeColor;
+@property (nonatomic, retain) UIColor *topHighlightStrokeColor;
+@property (nonatomic, retain) UIColor *lowHighlightStrokeColor;
 
 @property (nonatomic, retain) id representedObject;
 

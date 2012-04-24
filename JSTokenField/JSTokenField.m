@@ -27,7 +27,6 @@
 //
 
 #import "JSTokenField.h"
-#import "JSTokenButton.h"
 #import <QuartzCore/QuartzCore.h>
 
 NSString *const JSTokenFieldFrameDidChangeNotification = @"JSTokenFieldFrameDidChangeNotification";
@@ -141,7 +140,7 @@ NSString *const JSDeletedTokenKey = @"JSDeletedTokenKey";
 }
 
 
-- (void)addTokenWithTitle:(NSString *)string representedObject:(id)obj
+- (JSTokenButton*)addTokenWithTitle:(NSString *)string representedObject:(id)obj
 {
 	NSString *aString = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 	
@@ -158,7 +157,10 @@ NSString *const JSDeletedTokenKey = @"JSDeletedTokenKey";
 		}
 		
 		[self setNeedsLayout];
+        return token;
 	}
+    
+    return nil;
 }
 
 - (void)removeTokenForString:(NSString *)string

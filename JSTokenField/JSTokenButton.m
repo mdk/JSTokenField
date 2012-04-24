@@ -49,11 +49,7 @@
 	
 	[button setTitle:string forState:UIControlStateNormal];
 	
-	[button sizeToFit];
-	CGRect frame = [button frame];
-	frame.size.width += 20;
-	frame.size.height = 25;
-	[button setFrame:frame];
+    [button sizeToFitWithMargin:CGSizeMake(20, 5)];
 	
 	[button setToggled:NO];
 	
@@ -76,6 +72,15 @@
 		[self setBackgroundImage:self.normalBg forState:UIControlStateNormal];
 		[self setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 	}
+}
+
+- (void)sizeToFitWithMargin:(CGSize)margin
+{
+	[self sizeToFit];
+    CGRect frame = [self frame];
+	frame.size.width += margin.width;
+	frame.size.height += margin.height;
+	[self setFrame:frame];
 }
 
 - (void)dealloc

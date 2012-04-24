@@ -48,4 +48,6 @@
 
 + (JSTokenButton *)tokenWithString:(NSString *)string representedObject:(id)obj;
 
+- (void)sizeToFitWithMargin:(CGSize)margin;
+
 @end

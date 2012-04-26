@@ -151,9 +151,9 @@ NSString *const JSDeletedTokenKey = @"JSDeletedTokenKey";
 		JSTokenButton *token = [self tokenWithString:aString representedObject:obj];
 		[_tokens addObject:token];
 		
-		if ([self.delegate respondsToSelector:@selector(tokenField:didAddToken:representedObject:)])
+		if ([self.delegate respondsToSelector:@selector(tokenField:didAddToken:representedObject:button:)])
 		{
-			[self.delegate tokenField:self didAddToken:aString representedObject:obj];
+			[self.delegate tokenField:self didAddToken:aString representedObject:obj button:token];
 		}
 		
 		[self setNeedsLayout];

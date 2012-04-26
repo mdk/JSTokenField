@@ -111,7 +111,7 @@
 #pragma mark -
 #pragma mark JSTokenFieldDelegate
 
-- (void)tokenField:(JSTokenField *)tokenField didAddToken:(NSString *)title representedObject:(id)obj
+- (void)tokenField:(JSTokenField *)tokenField didAddToken:(NSString *)title representedObject:(id)obj button:(JSTokenButton*)button
 {
 	NSDictionary *recipient = [NSDictionary dictionaryWithObject:obj forKey:title];
 	[_toRecipients addObject:recipient];

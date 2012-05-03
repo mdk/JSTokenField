@@ -153,7 +153,13 @@ NSString *const JSDeletedTokenKey = @"JSDeletedTokenKey";
 		
 		if ([self.delegate respondsToSelector:@selector(tokenField:didAddToken:representedObject:button:)])
 		{
-			[self.delegate tokenField:self didAddToken:aString representedObject:obj button:token];
+            if ([obj isKindOfClass:[NSString class]])
+            {
+                NSString *rawObj = [(NSString *)obj stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                [self.delegate tokenField:self didAddToken:aString representedObject:rawObj button:token];
+            } else {
+                [self.delegate tokenField:self didAddToken:aString representedObject:obj button:token];
+            }
 		}
 		
 		[self setNeedsLayout];

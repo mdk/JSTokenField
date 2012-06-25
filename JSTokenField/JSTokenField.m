@@ -162,6 +162,8 @@ NSString *const JSDeletedTokenKey = @"JSDeletedTokenKey";
             }
 		}
 		
+        [token setMaxWidth:self.frame.size.width - 20];
+        
 		[self setNeedsLayout];
         return token;
 	}
@@ -264,7 +266,7 @@ NSString *const JSDeletedTokenKey = @"JSDeletedTokenKey";
 	
 	textFieldFrame.origin = currentRect.origin;
 	
-	if ((self.frame.size.width - textFieldFrame.origin.x) >= 60)
+	if ((self.frame.size.width - textFieldFrame.origin.x) >= 10)
 	{
 		textFieldFrame.size.width = self.frame.size.width - textFieldFrame.origin.x;
 	}

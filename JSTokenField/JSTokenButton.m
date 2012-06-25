@@ -35,6 +35,7 @@
 @synthesize normalBg = _normalBg;
 @synthesize highlightedBg = _highlightedBg;
 @synthesize representedObject = _representedObject;
+@synthesize maxWidth = _maxWidth;
 
 @synthesize topShadeColor = _topShadeColor;
 @synthesize lowShadeColor = _lowShadeColor;
@@ -91,12 +92,23 @@
     [self setNeedsDisplay];
 }
 
+- (void)setMaxWidth:(CGFloat)maxWidth
+{
+    _maxWidth = maxWidth;
+    [self sizeToFitWithMargin:CGSizeMake(20, 5)];
+}
+
 - (void)sizeToFitWithMargin:(CGSize)margin
 {
 	[self sizeToFit];
     CGRect frame = [self frame];
 	frame.size.width += margin.width;
 	frame.size.height += margin.height;
+    
+    if (_maxWidth > 0 && frame.size.width > _maxWidth) {
+        frame.size.width = _maxWidth;
+    }
+    
 	[self setFrame:frame];
 }
 

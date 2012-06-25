@@ -46,7 +46,8 @@
     UIColor *_lowHighlightStrokeColor;
     
 	id _representedObject;
-	
+    
+    CGFloat _maxWidth;
 }
 
 @property (nonatomic, getter=isToggled) BOOL toggled;
@@ -65,6 +66,8 @@
 @property (nonatomic, retain) UIColor *lowHighlightStrokeColor;
 
 @property (nonatomic, retain) id representedObject;
+
+@property (nonatomic, assign) CGFloat maxWidth;
 
 + (JSTokenButton *)tokenWithString:(NSString *)string representedObject:(id)obj;
 

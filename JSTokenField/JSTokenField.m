@@ -333,6 +333,11 @@ NSString *const JSDeletedTokenKey = @"JSDeletedTokenKey";
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
+    if ([string isEqualToString:@","] || [string isEqualToString:@" "]) {
+        [self textFieldDidEndEditing:textField];
+        return NO;
+    }
+    
 	if ([[textField text] isEqualToString:ZERO_WIDTH_SPACE_STRING] && [string isEqualToString:@""])
 	{
 		for (JSTokenButton *token in _tokens)
